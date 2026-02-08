@@ -23,8 +23,8 @@ export function Toolbar() {
   }, []);
 
   return (
-    <div className="flex items-center gap-2 p-3 bg-[#111111] border-b border-[#1a1a1a]">
-      <h1 className="text-sm font-semibold text-white mr-4 tracking-tight">How Bundling Works</h1>
+    <div className="flex items-center gap-2 p-2 md:p-3 bg-[#111111] border-b border-[#1a1a1a] flex-wrap">
+      <h1 className="text-sm font-semibold text-white mr-2 md:mr-4 tracking-tight">How Bundling Works</h1>
 
       <button
         onClick={() => addModule()}
