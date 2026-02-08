@@ -5,7 +5,31 @@ export function ChunkPanel() {
   const bundleResult = useGraphStore((s) => s.bundleResult);
   const nodes = useGraphStore((s) => s.nodes);
 
-  const nodeInfo = nodes.map((n) => ({ id: n.id, filename: n.data.filename }));
+  const nodeInfo = nodes.map((n) => ({
+    id: n.id,
+    filename: n.data.filename,
+    treeShaking: n.data.treeShaking,
+    exports: n.data.exports,
+  }));
+
+  // Compute global tree shaking summary
+  let totalRemoved = 0;
+  let modulesWithRemoved = 0;
+  if (bundleResult) {
+    for (const chunk of bundleResult.chunks) {
+      if (chunk.treeShakingStats) {
+        totalRemoved += chunk.treeShakingStats.removedExports;
+      }
+    }
+    const seen = new Set<string>();
+    for (const node of nodes) {
+      if (seen.has(node.id)) continue;
+      seen.add(node.id);
+      if (node.data.treeShaking && node.data.treeShaking.unusedExports.length > 0) {
+        modulesWithRemoved++;
+      }
+    }
+  }
 
   return (
     <div className="h-full bg-[#111111] border-l border-[#1a1a1a] flex flex-col">
@@ -69,6 +93,8 @@ export function ChunkPanel() {
                 {bundleResult.chunks.length} chunk{bundleResult.chunks.length !== 1 ? 's' : ''} generated from {nodes.length} module{nodes.length !== 1 ? 's' : ''}.
                 {bundleResult.chunks.some((c) => c.type === 'shared') &&
                   ' Shared dependencies were automatically extracted to avoid duplication.'}
+                {totalRemoved > 0 &&
+                  ` Tree shaking removed ${totalRemoved} unused export${totalRemoved !== 1 ? 's' : ''} across ${modulesWithRemoved} module${modulesWithRemoved !== 1 ? 's' : ''}.`}
               </p>
             </div>
           </div>

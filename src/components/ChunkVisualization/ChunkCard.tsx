@@ -3,7 +3,7 @@ import { useGraphStore } from '../../store/useGraphStore';
 
 interface ChunkCardProps {
   chunk: Chunk;
-  nodes: { id: string; filename: string }[];
+  nodes: { id: string; filename: string; treeShaking?: { usedExports: string[]; unusedExports: string[] }; exports?: string[] }[];
 }
 
 const TYPE_LABELS: Record<Chunk['type'], string> = {
@@ -19,8 +19,16 @@ export function ChunkCard({ chunk, nodes }: ChunkCardProps) {
 
   const moduleNames = chunk.modules.map((modId) => {
     const node = nodes.find((n) => n.id === modId);
-    return node?.filename ?? modId;
+    const filename = node?.filename ?? modId;
+    const ts = node?.treeShaking;
+    const exports = node?.exports ?? [];
+    if (ts && exports.length > 0) {
+      return { filename, annotation: `(${ts.usedExports.length}/${exports.length} used)` };
+    }
+    return { filename, annotation: null };
   });
+
+  const stats = chunk.treeShakingStats;
 
   return (
     <div
@@ -54,9 +62,12 @@ export function ChunkCard({ chunk, nodes }: ChunkCardProps) {
       </div>
 
       <div className="space-y-1 mb-3">
-        {moduleNames.map((name, i) => (
-          <div key={i} className="text-[#a0a0a0] text-xs pl-2 border-l" style={{ borderColor: chunk.color }}>
-            {name}
+        {moduleNames.map((mod, i) => (
+          <div key={i} className="text-[#a0a0a0] text-xs pl-2 border-l flex gap-1.5" style={{ borderColor: chunk.color }}>
+            <span>{mod.filename}</span>
+            {mod.annotation && (
+              <span className="text-[#666]">{mod.annotation}</span>
+            )}
           </div>
         ))}
       </div>
@@ -64,6 +75,12 @@ export function ChunkCard({ chunk, nodes }: ChunkCardProps) {
       <p className="text-[#666666] text-[11px] leading-relaxed">
         {chunk.reason}
       </p>
+
+      {stats && stats.totalExports > 0 && (
+        <p className="text-[#888] text-[11px] mt-2 pt-2 border-t border-[#222]">
+          Tree shaking: {stats.usedExports} of {stats.totalExports} exports included, {stats.removedExports} removed
+        </p>
+      )}
     </div>
   );
 }
