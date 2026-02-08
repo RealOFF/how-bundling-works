@@ -36,6 +36,8 @@ export function GraphEditor() {
   const setEntryPoint = useGraphStore((s) => s.setEntryPoint);
   const toggleEdgeType = useGraphStore((s) => s.toggleEdgeType);
   const removeEdge = useGraphStore((s) => s.removeEdge);
+  const triggerEditExports = useGraphStore((s) => s.triggerEditExports);
+  const triggerEditImports = useGraphStore((s) => s.triggerEditImports);
 
   const [menu, setMenu] = useState<MenuState | null>(null);
 
@@ -51,6 +53,10 @@ export function GraphEditor() {
             onClick: () => setEntryPoint(node.id),
           },
           {
+            label: 'Edit Exports...',
+            onClick: () => triggerEditExports(node.id),
+          },
+          {
             label: 'Delete Module',
             onClick: () => removeNode(node.id),
             danger: true,
@@ -58,7 +64,7 @@ export function GraphEditor() {
         ],
       });
     },
-    [setEntryPoint, removeNode]
+    [setEntryPoint, removeNode, triggerEditExports]
   );
 
   const onEdgeContextMenu: EdgeMouseHandler = useCallback(
@@ -74,6 +80,10 @@ export function GraphEditor() {
             onClick: () => toggleEdgeType(edge.id),
           },
           {
+            label: 'Edit Named Imports...',
+            onClick: () => triggerEditImports(edge.id),
+          },
+          {
             label: 'Delete Connection',
             onClick: () => removeEdge(edge.id),
             danger: true,
@@ -81,7 +91,7 @@ export function GraphEditor() {
         ],
       });
     },
-    [toggleEdgeType, removeEdge]
+    [toggleEdgeType, removeEdge, triggerEditImports]
   );
 
   const onPaneContextMenu = useCallback(
@@ -128,6 +138,7 @@ export function GraphEditor() {
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         fitView
+        fitViewOptions={{ maxZoom: 0.8, padding: 0.3 }}
         deleteKeyCode="Delete"
         className="bg-[#0a0a0a]"
       >

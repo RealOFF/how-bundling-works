@@ -1,9 +1,16 @@
 import type { ModuleNode, ImportEdge } from '../types/graph';
 
 const NODE_WIDTH = 180;
-const NODE_HEIGHT = 60;
-const H_GAP = 60;
-const V_GAP = 80;
+const BASE_NODE_HEIGHT = 60;
+const EXPORT_ROW_HEIGHT = 18;
+const H_GAP = 120;
+const V_GAP = 120;
+
+function getNodeHeight(node: ModuleNode): number {
+  const exportsCount = node.data.exports?.length ?? 0;
+  if (exportsCount === 0) return BASE_NODE_HEIGHT;
+  return BASE_NODE_HEIGHT + exportsCount * EXPORT_ROW_HEIGHT;
+}
 
 /**
  * Simple top-down layered layout using BFS ranking.
@@ -72,6 +79,23 @@ export function getLayoutedElements(
     layers.get(r)!.push(n.id);
   }
 
+  // Build a node map for height lookups
+  const nodeMap = new Map<string, ModuleNode>();
+  for (const n of nodes) {
+    nodeMap.set(n.id, n);
+  }
+
+  // Compute cumulative Y offsets per layer based on max node height in each layer
+  const sortedRanks = [...layers.keys()].sort((a, b) => a - b);
+  const layerY = new Map<number, number>();
+  let cumulativeY = 0;
+  for (const r of sortedRanks) {
+    layerY.set(r, cumulativeY);
+    const ids = layers.get(r)!;
+    const maxHeight = Math.max(...ids.map((id) => getNodeHeight(nodeMap.get(id)!)));
+    cumulativeY += maxHeight + V_GAP;
+  }
+
   // Position nodes
   const positions = new Map<string, { x: number; y: number }>();
   const maxLayerWidth = Math.max(...[...layers.values()].map((l) => l.length));
@@ -80,10 +104,11 @@ export function getLayoutedElements(
   for (const [r, ids] of layers) {
     const layerWidth = ids.length * (NODE_WIDTH + H_GAP) - H_GAP;
     const offsetX = (totalWidth - layerWidth) / 2;
+    const y = layerY.get(r) ?? 0;
     ids.forEach((id, i) => {
       positions.set(id, {
         x: offsetX + i * (NODE_WIDTH + H_GAP),
-        y: r * (NODE_HEIGHT + V_GAP),
+        y,
       });
     });
   }
