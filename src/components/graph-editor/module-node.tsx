@@ -5,6 +5,15 @@ import { useGraphStore } from '../../store/use-graph-store';
 
 const MAX_VISIBLE_EXPORTS = 6;
 
+function PencilIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+      <path d="m15 5 4 4" />
+    </svg>
+  );
+}
+
 export function ModuleNode({ id, data }: NodeProps<ModuleNodeType>) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(data.filename);
@@ -53,8 +62,8 @@ export function ModuleNode({ id, data }: NodeProps<ModuleNodeType>) {
         setAddExportValue('');
       }
     };
-    document.addEventListener('mousedown', handleMouseDown);
-    return () => document.removeEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mousedown', handleMouseDown, true);
+    return () => document.removeEventListener('mousedown', handleMouseDown, true);
   }, [isEditingExports]);
 
   if (editingExportsNodeId === id) {
@@ -148,7 +157,7 @@ export function ModuleNode({ id, data }: NodeProps<ModuleNodeType>) {
         </div>
       )}
 
-      <div className="px-4 py-3">
+      <div className="px-4 py-3 relative">
         {isEditing ? (
           <input
             ref={inputRef}
@@ -159,13 +168,18 @@ export function ModuleNode({ id, data }: NodeProps<ModuleNodeType>) {
             className="bg-[#0a0a0a] text-white text-xs w-full px-1 py-0.5 rounded outline-none border border-[#333] focus:border-[#555]"
           />
         ) : (
-          <div
-            onDoubleClick={handleDoubleClick}
-            className="text-white text-xs cursor-text truncate"
-            title="Double-click to rename"
-          >
-            {data.filename}
-          </div>
+          <>
+            <div className="text-white text-xs truncate pr-5">
+              {data.filename}
+            </div>
+            <button
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-white"
+              onClick={handleDoubleClick}
+              title="Rename"
+            >
+              <PencilIcon />
+            </button>
+          </>
         )}
       </div>
 
@@ -174,14 +188,7 @@ export function ModuleNode({ id, data }: NodeProps<ModuleNodeType>) {
           <div className="mx-3 border-t border-[#2a2a2a]" />
           <div
             ref={exportsSectionRef}
-            className="px-4 py-2"
-            onDoubleClick={(e) => {
-              e.stopPropagation();
-              if (!isEditingExports) {
-                setAddExportValue('');
-                setIsEditingExports(true);
-              }
-            }}
+            className="group/exports relative px-4 py-2"
           >
             {isEditingExports ? (
               <div className="space-y-1">
@@ -215,6 +222,16 @@ export function ModuleNode({ id, data }: NodeProps<ModuleNodeType>) {
               </div>
             ) : (
               <>
+                <button
+                  className="absolute top-2 right-3 text-[#555] hover:text-white"
+                  onClick={() => {
+                    setAddExportValue('');
+                    setIsEditingExports(true);
+                  }}
+                  title="Edit exports"
+                >
+                  <PencilIcon />
+                </button>
                 <div className="space-y-0.5">
                   {visibleExports.map((exp) => {
                     const isUnused = unusedSet.has(exp);
@@ -257,12 +274,11 @@ export function ModuleNode({ id, data }: NodeProps<ModuleNodeType>) {
       {!hasExports && !isEditingExports && (
         <div
           className="px-4 pb-2 text-[10px] text-[#444] cursor-pointer hover:text-[#666] transition-colors"
-          onDoubleClick={(e) => {
+          onClick={(e) => {
             e.stopPropagation();
             setAddExportValue('');
             setIsEditingExports(true);
           }}
-          title="Double-click to add exports"
         >
           + add exports
         </div>
