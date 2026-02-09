@@ -6,16 +6,16 @@ import {
   type EdgeProps,
 } from '@xyflow/react';
 import type { ImportEdge } from '../../types/graph';
-import { useGraphStore } from '../../store/useGraphStore';
+import { useGraphStore } from '../../store/use-graph-store';
 import { buildEdgePath, getPathMidpoint } from '../../utils/edgePath';
 
 function formatBadgeText(namedImports?: string[]): string {
-  if (!namedImports || namedImports.length === 0) return 'import()';
-  if (namedImports.length <= 2) return `import() { ${namedImports.join(', ')} }`;
-  return `import() { ${namedImports.slice(0, 2).join(', ')}, +${namedImports.length - 2} }`;
+  if (!namedImports || namedImports.length === 0) return 'import';
+  if (namedImports.length <= 2) return `import { ${namedImports.join(', ')} }`;
+  return `import { ${namedImports.slice(0, 2).join(', ')}, +${namedImports.length - 2} }`;
 }
 
-export function DynamicImportEdge(props: EdgeProps<ImportEdge>) {
+export function StaticImportEdge(props: EdgeProps<ImportEdge>) {
   const { id, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, data } = props;
   const toggleEdgeType = useGraphStore((s) => s.toggleEdgeType);
   const updateEdgeNamedImports = useGraphStore((s) => s.updateEdgeNamedImports);
@@ -96,12 +96,10 @@ export function DynamicImportEdge(props: EdgeProps<ImportEdge>) {
         id={id}
         path={edgePath}
         style={{
-          stroke: '#f59e0b',
+          stroke: '#555',
           strokeWidth: 2,
-          strokeDasharray: '8 4',
-          animation: 'dash 0.5s linear infinite',
         }}
-        markerEnd="url(#arrow-dynamic)"
+        markerEnd="url(#arrow)"
       />
       <EdgeLabelRenderer>
         <div
@@ -115,9 +113,9 @@ export function DynamicImportEdge(props: EdgeProps<ImportEdge>) {
           <button
             className="edge-label-badge"
             style={{
-              background: '#1f1709',
-              border: '1px solid #5c3a06',
-              color: '#f59e0b',
+              background: '#1a1a1a',
+              border: '1px solid #333',
+              color: '#a0a0a0',
               whiteSpace: 'nowrap',
             }}
             onClick={() => toggleEdgeType(id)}

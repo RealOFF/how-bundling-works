@@ -1,5 +1,5 @@
 import type { Chunk } from '../../types/graph';
-import { useGraphStore } from '../../store/useGraphStore';
+import { useGraphStore } from '../../store/use-graph-store';
 
 interface ChunkCardProps {
   chunk: Chunk;

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useGraphStore } from '../../store/useGraphStore';
+import { useGraphStore } from '../../store/use-graph-store';
 import { examples } from '../../data/examples';
 
 export function Toolbar() {

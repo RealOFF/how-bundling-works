@@ -1,5 +1,5 @@
-import { useGraphStore } from '../../store/useGraphStore';
-import { ChunkCard } from './ChunkCard';
+import { useGraphStore } from '../../store/use-graph-store';
+import { ChunkCard } from './chunk-card';
 
 export function ChunkPanel() {
   const bundleResult = useGraphStore((s) => s.bundleResult);

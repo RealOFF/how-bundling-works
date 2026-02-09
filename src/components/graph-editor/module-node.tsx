@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import type { ModuleNode as ModuleNodeType } from '../../types/graph';
-import { useGraphStore } from '../../store/useGraphStore';
+import { useGraphStore } from '../../store/use-graph-store';
 
 const MAX_VISIBLE_EXPORTS = 6;
 

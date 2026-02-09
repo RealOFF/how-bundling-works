@@ -7,11 +7,11 @@ import {
   type EdgeMouseHandler,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useGraphStore } from '../../store/useGraphStore';
-import { ModuleNode } from './ModuleNode';
-import { StaticImportEdge } from './StaticImportEdge';
-import { DynamicImportEdge } from './DynamicImportEdge';
-import { ContextMenu } from '../ContextMenu';
+import { useGraphStore } from '../../store/use-graph-store';
+import { ModuleNode } from './module-node';
+import { StaticImportEdge } from './static-import-edge';
+import { DynamicImportEdge } from './dynamic-import-edge';
+import { ContextMenu } from '../context-menu';
 
 const nodeTypes = { module: ModuleNode };
 const edgeTypes = {

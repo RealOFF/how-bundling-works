@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
-import { Toolbar } from './components/GraphEditor/Toolbar';
-import { GraphEditor } from './components/GraphEditor/GraphEditor';
-import { ChunkPanel } from './components/ChunkVisualization/ChunkPanel';
-import { useGraphStore } from './store/useGraphStore';
+import { Toolbar } from './components/graph-editor/toolbar';
+import { GraphEditor } from './components/graph-editor/graph-editor';
+import { ChunkPanel } from './components/chunk-visualization/chunk-panel';
+import { useGraphStore } from './store/use-graph-store';
 import { examples } from './data/examples';
 
 export default function App() {
