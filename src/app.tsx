@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
-import { ReactFlowProvider } from '@xyflow/react';
-import { Toolbar } from './components/graph-editor/toolbar';
-import { GraphEditor } from './components/graph-editor/graph-editor';
-import { ChunkPanel } from './components/chunk-visualization/chunk-panel';
-import { useGraphStore } from './store/use-graph-store';
-import { examples } from './data/examples';
+import { useEffect, useState } from "react";
+import { ReactFlowProvider } from "@xyflow/react";
+import { Toolbar } from "./components/graph-editor/toolbar";
+import { GraphEditor } from "./components/graph-editor/graph-editor";
+import { ChunkPanel } from "./components/chunk-visualization/chunk-panel";
+import { useGraphStore } from "./store/use-graph-store";
+import { examples } from "./data/examples";
 
 export default function App() {
   const loadExample = useGraphStore((s) => s.loadExample);
   const runBundler = useGraphStore((s) => s.runBundler);
   const hasNodes = useGraphStore((s) => s.nodes.length > 0);
-  const [mobileTab, setMobileTab] = useState<'graph' | 'results'>('graph');
+  const [mobileTab, setMobileTab] = useState<"graph" | "results">("graph");
 
   useEffect(() => {
     if (!hasNodes) {
@@ -21,35 +21,39 @@ export default function App() {
 
   return (
     <ReactFlowProvider>
-      <div className="h-screen w-screen flex flex-col bg-[#0a0a0a] text-white font-sans">
+      <div className="h-dvh w-screen flex flex-col bg-[#0a0a0a] text-white font-sans">
         <Toolbar />
 
         <div className="flex-1 flex flex-col md:flex-row min-h-0">
-          <div className={`flex-1 min-w-0 min-h-0 ${mobileTab !== 'graph' ? 'hidden md:block' : ''}`}>
+          <div
+            className={`flex-1 min-w-0 min-h-0 ${mobileTab !== "graph" ? "hidden md:block" : ""}`}
+          >
             <GraphEditor />
           </div>
-          <div className={`flex-1 md:flex-none md:w-[380px] shrink-0 min-w-0 min-h-0 overflow-y-auto md:overflow-y-visible md:border-l border-[#1a1a1a] ${mobileTab !== 'results' ? 'hidden md:block' : ''}`}>
+          <div
+            className={`flex-1 md:flex-none md:w-[380px] shrink-0 min-w-0 min-h-0 overflow-y-auto md:overflow-y-visible md:border-l border-[#1a1a1a] ${mobileTab !== "results" ? "hidden md:block" : ""}`}
+          >
             <ChunkPanel />
           </div>
         </div>
 
         <div className="flex border-t border-[#1a1a1a] bg-[#111111] shrink-0 md:hidden">
           <button
-            onClick={() => setMobileTab('graph')}
+            onClick={() => setMobileTab("graph")}
             className={`flex-1 py-2.5 text-xs font-medium transition-colors ${
-              mobileTab === 'graph'
-                ? 'text-white bg-[#1a1a1a]'
-                : 'text-[#666] hover:text-[#888]'
+              mobileTab === "graph"
+                ? "text-white bg-[#1a1a1a]"
+                : "text-[#666] hover:text-[#888]"
             }`}
           >
             Graph
           </button>
           <button
-            onClick={() => setMobileTab('results')}
+            onClick={() => setMobileTab("results")}
             className={`flex-1 py-2.5 text-xs font-medium transition-colors ${
-              mobileTab === 'results'
-                ? 'text-white bg-[#1a1a1a]'
-                : 'text-[#666] hover:text-[#888]'
+              mobileTab === "results"
+                ? "text-white bg-[#1a1a1a]"
+                : "text-[#666] hover:text-[#888]"
             }`}
           >
             Results
