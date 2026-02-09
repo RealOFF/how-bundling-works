@@ -7,7 +7,7 @@ import {
 } from '@xyflow/react';
 import type { ImportEdge } from '../../types/graph';
 import { useGraphStore } from '../../store/use-graph-store';
-import { buildEdgePath, getPathMidpoint } from '../../utils/edgePath';
+import { buildEdgePath, getPathMidpoint } from '../../utils/edge-path';
 
 function formatBadgeText(namedImports?: string[]): string {
   if (!namedImports || namedImports.length === 0) return 'import';
