@@ -53,17 +53,20 @@ export const useGraphStore = create<GraphState>((set, get) => ({
   editingImportsEdgeId: null,
 
   onNodesChange: (changes) => {
-    const hasDragEnd = changes.some(
-      (c) => c.type === 'position' && c.dragging === false
+    const dragEndNodeIds = new Set(
+      changes
+        .filter((c) => c.type === 'position' && c.dragging === false)
+        .map((c) => c.id)
     );
     let updatedNodes = applyNodeChanges(changes, get().nodes) as ModuleNode[];
-    if (hasDragEnd) {
+    if (dragEndNodeIds.size > 0) {
       set({
         nodes: updatedNodes,
-        edges: get().edges.map((e) => ({
-          ...e,
-          data: { ...e.data!, bendPoints: undefined },
-        })),
+        edges: get().edges.map((e) =>
+          dragEndNodeIds.has(e.source) || dragEndNodeIds.has(e.target)
+            ? { ...e, data: { ...e.data!, bendPoints: undefined } }
+            : e
+        ),
       });
       return;
     }
