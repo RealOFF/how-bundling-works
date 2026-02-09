@@ -124,7 +124,7 @@ export function GraphEditor() {
   }, []);
 
   return (
-    <div className="h-full w-full relative">
+    <div className="h-full w-full relative touch-none">
       <ReactFlow
         nodes={nodes}
         edges={edges}
